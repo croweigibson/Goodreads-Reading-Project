@@ -4,22 +4,24 @@ import pandas as pd
 import time
 import random
 
+# Your Google Books API key here
+API_KEY = "AIzaSyDVEHD4H0QkUE4oPrxq-TBtP8yjgql_W3o"
+
 headers = {"User-Agent": "Mozilla/5.0"}
 base_url = "https://www.goodreads.com/review/list/40791379?page="
 books_list = []
 page_num = 1
 
-def get_open_library_genres(title, author):
-    """Fetch genres from Open Library API"""
-    query = f"{title} {author}".replace(" ", "+")
-    url = f"https://openlibrary.org/search.json?q={query}"
-    
+def get_google_books_genres(title, author):
+    query = f'intitle:{title}+inauthor:{author}'
+    url = f'https://www.googleapis.com/books/v1/volumes?q={query}&key={API_KEY}'
     try:
         response = requests.get(url)
         data = response.json()
-        if "docs" in data and data["docs"]:
-            subjects = data["docs"][0].get("subject", [])
-            return ", ".join(subjects) if subjects else "Unknown"
+        if 'items' in data:
+            volume_info = data['items'][0]['volumeInfo']
+            categories = volume_info.get('categories', [])
+            return ", ".join(categories) if categories else "Unknown"
         else:
             return "Unknown"
     except Exception as e:
@@ -43,10 +45,10 @@ while True:
             date_added = book.find('td', class_='field date_added').find('div', class_='value').get_text(strip=True)
             num_pages = book.find('td', class_='field num_pages').find('div', class_='value').get_text(strip=True)
             
-            # Fetch genre from Open Library API
-            genre = get_open_library_genres(title, author)
+            # Fetch genre from Google Books API
+            genre = get_google_books_genres(title, author)
             
-            # Slow down requests to avoid rate limits
+            # Slow down a bit to avoid API rate limits
             time.sleep(random.uniform(0.5, 1.5))
 
             books_list.append({
@@ -60,12 +62,13 @@ while True:
             })
 
         except AttributeError:
-            continue  # Skip books with missing data
+            # skip book if any field is missing
+            continue
 
     print(f"Scraped page {page_num} ✅")
     page_num += 1
 
-# Save to a new CSV file
+# Save to CSV
 df = pd.DataFrame(books_list)
-df.to_csv("books_data2.csv", index=False)
+df.to_csv("books_data.csv", index=False)
 print(f"✅ Finished! Total books collected: {len(df)}")
