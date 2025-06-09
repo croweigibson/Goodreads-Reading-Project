@@ -106,7 +106,6 @@ This methodology can be applied to:
 
 ## 📈 Future Enhancements
 
-* **Interactive Web App**: Extend with Dash or custom frontend.
 * **Machine Learning**: Recommendation engine for next reads.
 * **Sentiment Analysis**: Analyze review text sentiment.
 * **Real-time Updates**: Automated daily/weekly data refresh.
@@ -114,6 +113,7 @@ This methodology can be applied to:
 * **Automated Profile Sync**: Implement a service to detect changes in your Goodreads profile and automatically re-scrape and update the dashboard.
 * **Scraping Optimization**: Parallelize and cache requests, tune delays, and use async requests to significantly speed up data collection.
 * **Genre Extraction Improvement**: Research alternative methods (e.g., headless browser scraping, robust HTML parsing, or reliable API integrations) to fetch genres more accurately and consistently.
+* **Filter & Visualization Enhancements**: Convert month filters from numeric (1–12) to names (Jan–Dec) and implement dynamic aggregation—when filtering by month, switch the “Books Read Per Year” chart to “Books Read By Month” for clearer insights.
 
 ---
 
